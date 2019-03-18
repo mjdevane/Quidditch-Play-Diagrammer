@@ -1,0 +1,210 @@
+<!-- Matt DeVane CS 530 -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quidditch Play Diagrammer</title>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/css/base.css" rel="stylesheet">
+    <script src="/lib/jquery/jquery-3.3.1.min.js"></script>
+	<script src="/lib/jquery/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+    <script src="/lib/popper/popper.min.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+	<script src="/js/base.js"></script>
+</head>
+
+<body>
+
+	<!-- the tools sidebar -->
+	<div id="Sidebar" class="sidebar">
+		<div id="TabHeaders" class="tab">
+			<button class="tablinks active" onclick="openTab(event, 'BackgroundTab')">Backgrounds</button>
+			<button class="tablinks" onclick="openTab(event, 'TokenTab')">Tokens</button>
+			<button class="tablinks" onclick="openTab(event, 'ToolsTab')">Tools</button>
+			<button class="tablinks closebtn" onclick="closeNav()">&times;</a>
+		</div>
+
+		<div id="BackgroundTab" class="tabcontent tabcontent-default">
+			<table id="BackgroundTable" class="table background-table">
+				<tr>
+					<td>
+						<img class="background-img" onclick="setCanvasBackground(this)" src="/assets/backgrounds/Background_Full_Blank.png"/>
+					</td>
+					<td>
+						<img class="background-img" onclick="setCanvasBackground(this)" src="/assets/backgrounds/Background_Full_Landscape.png"/>
+					</td>
+				</tr>
+				<tr>
+					<td>Blank Pitch</td>
+					<td>Full Pitch</td>
+				</tr>
+				<tr>
+					<td>
+						<img class="background-img" onclick="setCanvasBackground(this)" src="/assets/backgrounds/Background_Top_Half.png"/>
+					</td>
+					<td>
+						<img class="background-img" onclick="setCanvasBackground(this)" src="/assets/backgrounds/Background_Bottom_Half.png"/>
+					</td>
+				</tr>
+				<tr>
+					<td>Half Pitch Top</td>
+					<td>Half Pitch Bottom</td>
+				</tr>
+			</table>
+		</div>
+
+		<!-- display all the default tokens; more options available in context menu -->
+		<div id="TokenTab" class="tabcontent">
+			<table id="TokenTable" class="table token-table">
+				<tr>
+					<th>Team&nbsp;O</th>
+				</tr>
+				<tr>
+					<td>
+						<!-- hanging underscore is awkard, but it works best with status tokens -->
+						<img class="token-img" team="circle", position="white" status="" src="/assets/tokens/token_circle_white_.png"/>
+					</td>
+					<td>
+						<img class="token-img" team="circle", position="black" status="" src="/assets/tokens/token_circle_black_.png"/>
+					</td> 
+					<td>
+						<img class="token-img" team="circle", position="green" status="" src="/assets/tokens/token_circle_green_.png"/>
+					</td>
+					<td>
+						<img class="token-img" team="circle", position="gold" status="" src="/assets/tokens/token_circle_gold_.png"/>
+					</td>
+				</tr>
+				<tr>
+					<td>Chaser</td>
+					<td>Beater</td> 
+					<td>Keeper</td>
+					<td>Seeker</td> 
+				</tr>
+				<tr>
+					<th>Team&nbsp;X</th>
+				</tr>
+				<tr>
+					<td>
+						<img class="token-img" team="x", position="white" status="" src="/assets/tokens/token_x_white_.png"/>
+					</td>
+					<td>
+						<img class="token-img" team="x", position="black" status="" src="/assets/tokens/token_x_black_.png"/>
+					</td>
+					<td>
+						<img class="token-img" team="x", position="green" status="" src="/assets/tokens/token_x_green_.png"/>
+					</td>
+					<td>
+						<img class="token-img" team="x", position="gold" status="" src="/assets/tokens/token_x_gold_.png"/>
+					</td>
+				</tr>
+				<tr>
+					<td>Chaser</td>
+					<td>Beater</td> 
+					<td>Keeper</td>
+					<td>Seeker</td> 
+				</tr>
+				<tr>
+					<th>Officials</th>
+					<th></th> 
+					<th></th>
+					<th></th>
+				</tr>
+				<tr>
+					<td>
+						<img class="token-img" team="diamond", position="gray" status="" src="/assets/tokens/token_diamond_gray_.png"/>
+					</td>
+					</td>
+					<td>
+						<img class="token-img" team="diamond", position="gold" status="" src="/assets/tokens/token_diamond_gold_.png"/>
+					</td>
+					<td>
+					</td>
+
+					<td>
+				</tr>
+				<tr>
+					<td>Referee</td>
+					<td>Snitch</td> 
+					<td></td>
+					<td></td> 
+				</tr>
+			</table>
+		</div>
+		
+		<div id="ToolsTab" class="tabcontent">
+			<ul class="no-bullets">
+				<li>
+					<input type="radio" name="active-tool" id="DragTool" checked>Token Tool
+				</li>
+				<li>
+					<input type="radio" name="active-tool" id="DrawTool">Drawing Tool
+				</li>
+				<li>
+					Line Width <input type="number" min="1" step="1" id="WidthPicker" class="picker" value=2></textarea>
+				</li>
+				<li>
+					Line Color <input type="color" id="ColorPicker" value="#000000" class="picker">
+				</li>
+				<li>
+					<button id="TokenClearBtn" class="button warning">Clear Tokens</button>
+				</li>
+				<li>
+					<button id="CanvasClearBtn" class="button warning">Clear Canvas</button>
+				</li>
+
+			</ul>
+		</div>
+	</div>
+	
+	<button id="OpenBtn" class="openbtn sticky" onclick="openNav()">Menu</button> 
+	
+	<!-- the main canvas section -->
+	<div class="non-sidebar" id="NonSidebar">
+		<span id="TitleHeader" class="title-header"> <h1>Quidditch Play Diagrammer</h1> </span>
+		<div id="CanvasContainer" class="canvas-container" tokencount="0">
+			<!-- context menu moves around whenever token right clicked; hidden otherwise -->
+			<div id="ContextMenu" class="context-menu dropdown">
+				<ul id="ContextMenu2" class="dropdown-menu">
+					<li><input type="checkbox" name="status" value="broom"> Off Broom</li>
+					<li><input type="checkbox" name="status" value="ball"> Ball</li>
+					<li class="dropdown-submenu">
+						<button class="button dropdown-toggle">Team<span class="caret"></span></button>
+						<div class="dropdown-menu">
+							<form id="TeamForm">
+								<input type="radio" name="team" value="circle"> O<br>
+								<input type="radio" name="team" value="x"> X<br>
+								<input type="radio" name="team" value="diamond"> ◇<br>
+							</form>
+						</div>
+					</li>
+					<li class="dropdown-submenu">
+						<button class="button dropdown-toggle">Position<span class="caret"></span></button>
+						<div class="dropdown-menu">
+							<form id="PositionForm" class="position-radio">
+								<input type="radio" name="position" value="black"> Beater<br>
+								<input type="radio" name="position" value="white"> Chaser<br>
+								<input type="radio" name="position" value="green"> Keeper<br>
+								<input type="radio" name="position" value="gold"> Seeker<br>
+								<input type="radio" name="position" value="gray"> Referee<br>
+								<input type="radio" name="position" value="gold"> Snitch<br>
+							</form>
+						</div>
+					</li>
+					<li>
+						<button class="button warning" id="DeleteButton">Delete &times;</button>
+					</li>
+				</ul>
+			</div>
+			<!-- surrounding div will resize itself to fit this transparent image -->
+			<img id="CanvasResizer" class="canvas-resizer" src="/assets/backgrounds/Background_Full_Blank.png" draggable="false"/>
+			<canvas id="DrawingCanvas" class="canvas canvas-inactive" height="600" width="900">
+				<p class="noscript">Canvas not supported by browser or javascript is disabled.</p>
+			</canvas>
+		</div>
+	</div>
+
+</body>
+
+</html>
