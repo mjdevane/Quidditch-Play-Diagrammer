@@ -1,6 +1,3 @@
-# Matt DeVane
-# CS 530
-
 from flask import Flask, render_template, send_file
 import os
 

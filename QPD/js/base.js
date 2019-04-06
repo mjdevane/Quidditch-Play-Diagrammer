@@ -1,6 +1,3 @@
-// Matt DeVane
-// CS 530
-
 window.onload = function(){
 
 	/* 
